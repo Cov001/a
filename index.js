@@ -23,7 +23,7 @@ const io = new Server(httpServer, {
   cors: {
     origin:
       process.env.NODE_ENV === "production"
-        ? "https://b-ochre-two.vercel.app/"
+        ? "https://b-ochre-two.vercel.app"
         : "http://localhost:3000",
   },
 });
