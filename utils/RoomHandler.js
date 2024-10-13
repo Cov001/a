@@ -1,5 +1,5 @@
 // to add a member to the MAP
-exports.addMember = (data, mapOfMembers, socketToRooms) => {
+export const addMember = (data, mapOfMembers, socketToRooms) => {
   const { roomId, email, socket } = data;
 
   if (mapOfMembers.has(roomId)) {
@@ -19,17 +19,17 @@ exports.addMember = (data, mapOfMembers, socketToRooms) => {
     mapOfMembers.set(roomId, [{ socketId: socket.id, email: email }]);
   }
   socketToRooms.set(socket.id, roomId);
-  this.initialUpdate(mapOfMembers, socketToRooms);
+  initialUpdate(mapOfMembers, socketToRooms);
 };
 
 // initial update
-exports.initialUpdate = (members, socketToRooms) => {
+export const initialUpdate = (members, socketToRooms) => {
   console.log("members", members);
   console.log("socket => room", socketToRooms);
 };
 
 // notifiy the room that participant has left the room by sending data all the other connected users.
-exports.notifiyParticipantLeftRoom = (socket, roomId) => {
+export const notifiyParticipantLeftRoom = (socket, roomId) => {
   const RoomLeavingParticipantId = socket.id;
   socket
     .to(roomId)
@@ -38,7 +38,7 @@ exports.notifiyParticipantLeftRoom = (socket, roomId) => {
 
 // remove the user from the MAP
 
-exports.leaveRoom = (socket, mapOfMembers, socketToRooms) => {
+export const leaveRoom = (socket, mapOfMembers, socketToRooms) => {
   const roomId = socketToRooms.get(socket.id); // socket.id will the socket id of the (current user)
   const memberArr = mapOfMembers.get(roomId);
 
@@ -52,21 +52,21 @@ exports.leaveRoom = (socket, mapOfMembers, socketToRooms) => {
   if (!filterMembers.length) {
     mapOfMembers.delete(roomId);
     socketToRooms.delete(socket.id);
-    this.initialUpdate(mapOfMembers, socketToRooms);
+    initialUpdate(mapOfMembers, socketToRooms);
     return;
   }
 
   // send the socket id of the leaving user to all the users who are still in the meet.
-  this.notifiyParticipantLeftRoom(socket, roomId);
+  notifiyParticipantLeftRoom(socket, roomId);
 
   mapOfMembers.set(roomId, filterMembers);
 
   socketToRooms.delete(socket.id);
 
-  this.initialUpdate(mapOfMembers, socketToRooms);
+  initialUpdate(mapOfMembers, socketToRooms);
 };
 
-exports.getUserName = (socketIdToBeQueried, roomId, roomMembersMap) => {
+export const getUserName = (socketIdToBeQueried, roomId, roomMembersMap) => {
   const members = roomMembersMap.get(roomId);
 
   if (!members) return;
